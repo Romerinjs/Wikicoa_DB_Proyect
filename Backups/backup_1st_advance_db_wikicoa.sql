@@ -1,70 +1,79 @@
-#Paso 1:
-#Creacion de la base de datos
-CREATE DATABASE Wikicoa;
+# Paso 1:
+# Creación de la base de datos
+DROP DATABASE IF EXISTS wikicoa;
+CREATE DATABASE wikicoa;
 
-#Paso 2:
-USE Wikicoa;
+# Paso 2:
+USE wikicoa;
 
-#Paso 3:
-#Creacion de la tabla Usuarios
-CREATE TABLE Usuarios (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_usuario VARCHAR(50),
-    correo VARCHAR(100),
-    contraseña VARCHAR(100),
-    fecha_registro DATETIME 	);
-
-#Creacion de la tabla Articulos
-CREATE TABLE Articulos (
-    id_articulo INT AUTO_INCREMENT PRIMARY KEY,
-    titulo VARCHAR(100),
-    contenido TEXT,
-    fecha_creacion DATETIME,
-    fecha_modificacion DATETIME,
-    id_usuario INT,
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario) 	);
-
-#Creacion de la tabla Categorias
-CREATE TABLE Categorias (
-    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
-    nombre_categoria VARCHAR(50),
-    descripcion TEXT
+# Paso 3:
+# Creación de la tabla users
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    passwordKey VARCHAR(100),
+    registrationDate DATETIME
 );
 
-#tablas de la normalizacion
-#CREATE TABLE Asigna (
-#    id_articulo INT,
-#    id_categoria INT,
-#   PRIMARY KEY (id_articulo, id_categoria),
-#    FOREIGN KEY (id_articulo) REFERENCES Articulos(id_articulo),
-#    FOREIGN KEY (id_categoria) REFERENCES Categorias(id_categoria) );
-
-#Creacion de la tabla Crea
-CREATE TABLE Crea (
-    id_usuario INT,
-    id_articulo INT,
-    fecha_creacion DATE NOT NULL,
-    PRIMARY KEY (id_usuario, id_articulo),
-    FOREIGN KEY (id_usuario) REFERENCES Usuarios(id_usuario),
-    FOREIGN KEY (id_articulo) REFERENCES Articulos(id_articulo)
+# Creación de la tabla people
+CREATE TABLE people (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    fullName VARCHAR(100),
+    birthdate DATE,
+    gender VARCHAR(10),
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES users(id)  -- Relacionado con 'id' en users
 );
-CREATE TABLE Articulo_Categoria (
-    id_articulo INT,
-    id_categoria INT,
-    PRIMARY KEY (id_articulo, id_categoria),
-    FOREIGN KEY (id_articulo) REFERENCES Articulos(id_articulo),
-    FOREIGN KEY (id_categoria) REFERENCES Categorias(id_categoria)
+
+# Creación de la tabla articles
+CREATE TABLE articles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    content TEXT,
+    creationDate DATETIME,
+    modificationDate DATETIME,
+    userId INT,
+    FOREIGN KEY (userId) REFERENCES users(id)  -- Relacionado con 'id' en users
 );
-#Agregar columna en tabla Usuarios
-ALTER TABLE Usuarios
-ADD COLUMN prueba VARCHAR(1) DEFAULT "p";
 
-#Eliminacion de columna previa
-ALTER TABLE Usuarios
-DROP COLUMN prueba;
+# Creación de la tabla categories
+CREATE TABLE categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    description TEXT
+);
 
-#Modificación de columna
-ALTER TABLE Usuarios
-MODIFY COLUMN correo VARCHAR(100) DEFAULT "empty";
+# Creación de la tabla creates
+CREATE TABLE creates (
+    userId INT,
+    articleId INT,
+    creationDate DATE NOT NULL,
+    PRIMARY KEY (userId, articleId),
+    FOREIGN KEY (userId) REFERENCES users(id),  -- Relacionado con 'id' en users
+    FOREIGN KEY (articleId) REFERENCES articles(id)  -- Relacionado con 'id' en articles
+);
 
-#consultas
+# Creación de la tabla assigns (anteriormente Article_Category)
+CREATE TABLE assigns (
+    articleId INT,
+    categoryId INT,
+    PRIMARY KEY (articleId, categoryId),
+    FOREIGN KEY (articleId) REFERENCES articles(id),  -- Relacionado con 'id' en articles
+    FOREIGN KEY (categoryId) REFERENCES categories(id)  -- Relacionado con 'id' en categories
+);
+
+# Agregar columna en tabla users
+ALTER TABLE users
+ADD COLUMN testColumn VARCHAR(1) DEFAULT "p";
+
+# Eliminación de columna previa
+ALTER TABLE users
+DROP COLUMN testColumn;
+
+# Modificación de columna
+ALTER TABLE users
+MODIFY COLUMN email VARCHAR(100) DEFAULT "empty";
+
+ALTER TABLE users
+DROP COLUMN email;
+ALTER TABLE people ADD COLUMN email VARCHAR (100) DEFAULT "@yourmail.dom";
