@@ -18,10 +18,11 @@ CREATE TABLE users (
 # Creación de la tabla people
 CREATE TABLE people (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    fullName VARCHAR(100),
+    firstName VARCHAR(15),
+    lastName VARCHAR (15),
     birthdate DATE,
     gender VARCHAR(10),
-    userId INT,
+    userId INT UNIQUE, # con esto garantizamos que la relacion sea 1 a 1 xd
     FOREIGN KEY (userId) REFERENCES users(id)  -- Relacionado con 'id' en users
 );
 
@@ -77,3 +78,6 @@ MODIFY COLUMN email VARCHAR(100) DEFAULT "empty";
 ALTER TABLE users
 DROP COLUMN email;
 ALTER TABLE people ADD COLUMN email VARCHAR (100) DEFAULT "@yourmail.dom";
+ALTER TABLE people DROP COLUMN fullName;
+ALTER TABLE people ADD COLUMN firstName VARCHAR(15);
+ALTER TABLE people ADD COLUMN lastName VARCHAR(15);
