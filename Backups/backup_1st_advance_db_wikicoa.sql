@@ -1,4 +1,4 @@
--- Base de datos existente:
+-- Base de datos existente
 DROP DATABASE IF EXISTS wikicoa;
 CREATE DATABASE wikicoa;
 USE wikicoa;
@@ -17,7 +17,7 @@ CREATE TABLE people (
     firstName VARCHAR(200),
     lastName VARCHAR(200),
     birthdate DATE,
-    gender VARCHAR(10),
+    gender VARCHAR(200),
     userId INT UNIQUE,
     FOREIGN KEY (userId) REFERENCES users(id)
 );
@@ -36,16 +36,19 @@ CREATE TABLE articles (
 -- Tabla de categorías
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(200),
+    `name` VARCHAR(200),
     description TEXT
 );
 
--- Tabla de creación de artículos
+-- Tabla de creación de artículos (modificada con campos de likes y revisiones)
 CREATE TABLE creates (
     id INT AUTO_INCREMENT PRIMARY KEY,
     userId INT,
     articleId INT,
     creationDate DATE NOT NULL,
+    likes INT DEFAULT 0, -- Número total de likes
+    lastRevisionDate DATETIME NULL, -- Fecha de la última revisión
+    lastRevisionContent TEXT NULL, -- Contenido de la última revisión
     FOREIGN KEY (userId) REFERENCES users(id),
     FOREIGN KEY (articleId) REFERENCES articles(id)
 );
@@ -58,8 +61,6 @@ CREATE TABLE assigns (
     FOREIGN KEY (articleId) REFERENCES articles(id),
     FOREIGN KEY (categoryId) REFERENCES categories(id)
 );
-
--- Nuevas tablas:
 
 -- Tabla de comentarios
 CREATE TABLE comments (
@@ -80,22 +81,11 @@ CREATE TABLE tags (
 
 -- Relación entre artículos y etiquetas
 CREATE TABLE article_tag (
-	id INT AUTO_INCREMENT PRIMARY KEY,
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     articleId INT,
     tagId INT,
     FOREIGN KEY (articleId) REFERENCES articles(id),
     FOREIGN KEY (tagId) REFERENCES tags(id)
-);
-
--- Tabla de revisiones de artículos
-CREATE TABLE article_revisions (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    articleId INT,
-    userId INT,
-    revisionDate DATETIME NOT NULL,
-    content TEXT NOT NULL,
-    FOREIGN KEY (articleId) REFERENCES articles(id),
-    FOREIGN KEY (userId) REFERENCES users(id)
 );
 
 -- Tabla de roles
@@ -106,19 +96,19 @@ CREATE TABLE roles (
 
 -- Relación entre usuarios y roles
 CREATE TABLE user_roles (
-	id INT PRIMARY KEY AUTO_INCREMENT,
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     userId INT,
     roleId INT,
     FOREIGN KEY (userId) REFERENCES users(id),
     FOREIGN KEY (roleId) REFERENCES roles(id)
 );
 
--- Tabla de likes en artículos
-CREATE TABLE article_likes (
-	id INT PRIMARY KEY AUTO_INCREMENT,
-    userId INT,
-    articleId INT,
-    likeDate DATETIME NOT NULL,
-    FOREIGN KEY (userId) REFERENCES users(id),
-    FOREIGN KEY (articleId) REFERENCES articles(id)
+-- Tabla principal de la biblioteca virtual
+CREATE TABLE virtual_library (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    libraryName VARCHAR(200) NOT NULL,
+    description TEXT,
+    creationDate DATETIME NOT NULL,
+    categoryId INT,
+    FOREIGN KEY (categoryId) REFERENCES categories(id)
 );

@@ -23,6 +23,13 @@ SELECT users.username, articles.title AS userArticles
 FROM users
 RIGHT JOIN articles ON users.id = articles.userId;
 
+# Muestra todas las categorías y los artículos asignados a cada una, incluso si alguna categoría no tiene artículos.
+SELECT categories.name AS categoryName, articles.title AS articleTitle
+FROM categories
+RIGHT JOIN assigns ON categories.id = assigns.categoryId
+RIGHT JOIN articles ON assigns.articleId = articles.id;
+
+
 
 # Consulta con Cross
 # Obtener todas las combinaciones posibles de usuarios y categorías, independientemente de si están relacionados.
